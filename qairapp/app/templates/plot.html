@@ -1,0 +1,165 @@
+<html lang="en">
+  <head>
+    <link
+      href="{{ url_for('static', filename= 'css/plotstyle.css') }}"
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+    />
+    <!--<link href="{{ url_for('static', filename= 'css/style.css') }}" rel="stylesheet" type="text/css" media="all"> -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--<meta http-equiv="refresh" content="5">-->
+    <title>POLLUTANTS STATUS</title>
+    <!-- HIGH CHART-->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+  </head>
+  <body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+        {% for message in messages %}
+        <div class="alert_green">
+          <!-- <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> -->
+          {{ message }}
+        </div>
+        <script>
+          // Fade out the alert box after 3 seconds
+          setTimeout(function() {
+            var alertBox = document.querySelector('.alert_green');
+            alertBox.style.opacity = '0';
+            alertBox.style.transition = 'opacity 1s ease-in-out';
+            setTimeout(function() {
+              alertBox.remove();
+            }, 1000);
+          }, 800);
+        </script>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+    <header class="header">
+      <p class="logo">CHUKS.N - SMART POLLUTANT DASHBOARD</p>
+
+      <span style="display: flex">
+        <!--DELETE ALL DATA-->
+        <form action="/delete" method="post">
+          <input type="submit" class="buttonstyle" value="CLEAR ALL DATA" />
+        </form>
+        <!-- LOGOUT -->
+        <form action="/logout" method="post">
+          <input type="submit" class="logout" value="LOGOUT" />
+        </form>
+      </span>
+    </header>
+    
+    <!--HIGH CHART -->
+    <div class="jumbotron"></div>
+    <br />
+    <br />
+    <div class="container-fluid">
+      {% for i in range(1, 6) %}
+      <div class="container">
+        <div id="c{{ i }}"></div>
+      </div>
+      {% endfor %}
+    </div>
+  </body>
+
+  <script>
+    //Create Chart
+    function createChart(id, titleText, yAxisTitleText, dataPointIndex, col) {
+      const chart = new Highcharts.Chart({
+        chart: { renderTo: id },
+        title: { text: titleText },
+        series: [
+          {
+            showInLegend: false,
+            data: [],
+          },
+        ],
+        plotOptions: {
+          line: {
+            animation: false,
+            dataLabels: { enabled: true },
+          },
+          series: { color: col },
+        },
+        xAxis: {
+          type: "datetime",
+          dateTimeLabelFormats: { second: "%H:%M:%S" },
+        },
+        yAxis: { title: { text: yAxisTitleText } },
+        credits: { enabled: false },
+      });
+      setInterval(() => {
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            const x = new Date().getTime();
+            const y = this.responseText;
+            //const y_strip = y.slice(1, -1);
+            const y_split = y.split(", ");
+            const y_plot = parseFloat(y_split[dataPointIndex]);
+
+            if (chart.series[0].data.length > 40) {
+              chart.series[0].addPoint([x, y_plot], true, true, true);
+            } else {
+              chart.series[0].addPoint([x, y_plot], true, false, true);
+            }
+          }
+        };
+        xhttp.open("GET", "/data", true);
+        xhttp.send();
+      }, 5000);
+      return chart;
+    }
+
+    const c1 = createChart(
+      "c1",
+      "Channel 1",
+      "Temperature",
+      1, //because id takes position zero
+      "#f2ad0c"
+    );
+
+    const c2 = createChart("c2", "Channel 2", "Humidity", 2, "#16c5e0");
+
+    const c3 = createChart("c3", "Channel 3", "Dust", 3, "#e0103d");
+
+    const c4 = createChart("c4", "Channel 4", "Carbon (IV) Oxide", 4, "#3610e0");
+
+    const c5 = createChart("c5", "Channel 5", "Methane", 5, "#faa2a2");
+
+
+    function showToast(message) {
+  // Create the toast element
+  var toast = document.createElement("div");
+  toast.classList.add("toast");
+  toast.innerText = message;
+
+  // Add the toast to the container
+  var container = document.getElementById("toast-container");
+  container.appendChild(toast);
+
+  // Show the toast
+  setTimeout(function() {
+    toast.classList.add("fade-in");
+  }, 100);
+
+  // Hide the toast
+  setTimeout(function() {
+    toast.classList.add("fade-out");
+  }, 3000);
+
+  // Remove the toast from the container
+  setTimeout(function() {
+    container.removeChild(toast);
+  }, 3300);
+}
+  </script>
+</html>

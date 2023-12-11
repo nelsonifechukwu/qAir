@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link
+      href="{{ url_for('static', filename= 'css/style.css') }}"
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+    /> -->
+    <link rel="stylesheet" href="../static/css/login.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Karla:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.8.95/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <title>SMART POLLUTANT MONITOR</title>
+  </head>
+  <body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+        {% for message in messages %}
+        <div class="alert_red">
+          <!-- <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> -->
+          {{ message }}
+        </div>
+        <script>
+          // Fade out the alert box after 3 seconds
+          setTimeout(function() {
+            var alertBox = document.querySelector('.alert_red');
+            alertBox.style.opacity = '0';
+            alertBox.style.transition = 'opacity 1s ease-in-out';
+            setTimeout(function() {
+              alertBox.remove();
+            }, 1000);
+          }, 3000);
+        </script>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6 login-section-wrapper">
+        <div class="brand-wrapper pl-lg-5">
+          <h4 class="logo"> POLLUTION MONITOR</h4>
+        </div>
+        <div class="login-wrapper my-auto pl-lg-5">
+          <h1 class="login-title">Log in</h1>
+          <form action="/" method="post">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input type="text" name="username" id="username" class="form-control" placeholder="Username">
+            </div>
+            <div class="form-group mb-4">
+              <label for="password">Password</label>
+              <input type="password" name="password" id="password" class="form-control" placeholder="********">
+            </div>
+            <input name="login" id="login" class="btn btn-block login-btn" type="submit" value="Login">
+          </form>
+          <p class="login-wrapper-footer-text">Copyright &copy; <script>document.write(/\d{4}/.exec(Date())[0])</script> Chukwudi Pollution Monitor</p>
+        </div>
+      </div>
+      <div class="col-sm-6 px-0 d-none d-sm-block">
+        <img src="https://img.freepik.com/free-photo/aerial-drone-view-chisinau-thermal-station-with-smoke-coming-out-tube-buildings-roads-fog-air-moldova_1268-16960.jpg?w=740&t=st=1678016583~exp=1678017183~hmac=7f7b44a975d4da9c47ab91d87850966a7fe698d329dab8ef8f388acec0416e21" alt="login image" class="login-img">
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    
+  </body>
+</html>
